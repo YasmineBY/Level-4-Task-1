@@ -5,20 +5,53 @@ import com.google.android.material.snackbar.Snackbar
 import androidx.appcompat.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.level4_task1.R
+import com.example.level4_task1.database.ProductRepository
+import com.example.level4_task1.model.Product
 
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.content_main.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class MainActivity : AppCompatActivity() {
+    private val shoppingList = arrayListOf<Product>()
+    private val productAdapter = ProductAdapter(shoppingList)
+    private lateinit var productRepository: ProductRepository
+    private val mainScope = CoroutineScope(Dispatchers.Main)
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
+        productRepository = ProductRepository(this)
+        initViews()
 
-        fab.setOnClickListener { view ->
-            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                    .setAction("Action", null).show()
+    }
+    private fun initViews() {
+        rvShoppingList.layoutManager = LinearLayoutManager(this, RecyclerView.VERTICAL, false)
+        rvShoppingList.adapter = productAdapter
+        rvShoppingList.addItemDecoration(DividerItemDecoration(this, DividerItemDecoration.VERTICAL))
+        createItemTouchHelper().attachToRecyclerView(rvShoppingList)
+        getShoppingListFromDatabase()
+
+    }
+
+
+    private fun getShoppingListFromDatabase() {
+        mainScope.launch {
+            val shoppingList = withContext(Dispatchers.IO) {
+                productRepository.getAllProducts()
+            }
+            this@MainActivity.shoppingList.clear()
+            this@MainActivity.shoppingList.addAll(shoppingList)
+            this@MainActivity.productAdapter.notifyDataSetChanged()
         }
     }
 
