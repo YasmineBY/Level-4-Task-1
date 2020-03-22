@@ -19,6 +19,9 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class MainActivity : AppCompatActivity() {
+
+    private val shoppingList = arrayListOf<Product>()
+    private val productAdapter = ProductAdapter(shoppingList)
     private lateinit var productRepository: ProductRepository
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -32,11 +35,13 @@ class MainActivity : AppCompatActivity() {
                     .setAction("Action", null).show()
         }
     }
+
+
     private fun initViews() {
         rvShoppingList.layoutManager = LinearLayoutManager(this, RecyclerView.VERTICAL, false)
         rvShoppingList.adapter = productAdapter
         rvShoppingList.addItemDecoration(DividerItemDecoration(this, DividerItemDecoration.VERTICAL))
-        createItemTouchHelper().attachToRecyclerView(rvShoppingList)
+//        createItemTouchHelper().attachToRecyclerView(rvShoppingList)
         getShoppingListFromDatabase()
 
     }
