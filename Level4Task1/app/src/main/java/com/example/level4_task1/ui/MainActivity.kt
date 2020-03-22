@@ -88,16 +88,20 @@ class MainActivity : AppCompatActivity() {
         menuInflater.inflate(R.menu.menu_main, menu)
         return true
     }
-
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         return when (item.itemId) {
-            R.id.action_settings -> true
+            R.id.action_delete_shopping_list -> {
+                deleteShoppingList()
+                true
+            }
             else -> super.onOptionsItemSelected(item)
         }
     }
+
+
 
     private fun createItemTouchHelper(): ItemTouchHelper {
 
@@ -114,7 +118,6 @@ class MainActivity : AppCompatActivity() {
                 return false
             }
 
-            // Callback triggered when a user swiped an item.
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                 val position = viewHolder.adapterPosition
                 val productToDelete = shoppingList[position]
@@ -128,4 +131,15 @@ class MainActivity : AppCompatActivity() {
         }
         return ItemTouchHelper(callback)
     }
+
+    private fun deleteShoppingList() {
+        mainScope.launch {
+            withContext(Dispatchers.IO) {
+                productRepository.deleteAllProducts()
+            }
+            getShoppingListFromDatabase()
+        }
+    }
+
+
 }
