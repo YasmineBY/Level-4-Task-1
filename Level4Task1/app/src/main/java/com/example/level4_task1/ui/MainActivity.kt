@@ -1,10 +1,11 @@
-package com.example.level4_task1
+package com.example.level4_task1.ui
 
 import android.os.Bundle
 import com.google.android.material.snackbar.Snackbar
 import androidx.appcompat.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
+import com.example.level4_task1.R
 
 import kotlinx.android.synthetic.main.activity_main.*
 
