@@ -8,7 +8,6 @@ import com.example.shoppinglist.shoppinglist.Product
 
 
 @Dao
-
 interface ProductDao {
 
     @Query("SELECT * FROM product_table")
@@ -22,4 +21,5 @@ interface ProductDao {
 
     @Query("DELETE FROM product_table")
     suspend fun deleteAllProducts()
+
 }

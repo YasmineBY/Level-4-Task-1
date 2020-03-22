@@ -10,7 +10,8 @@ class ProductRepository(context: Context) {
     private val productDao: ProductDao
 
     init {
-        val database = ShoppingListRoomDatabase.getDatabase(context)
+        val database =
+            ShoppingListRoomDatabase.getDatabase(context)
         productDao = database!!.productDao()
     }
 

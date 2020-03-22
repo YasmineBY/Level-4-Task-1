@@ -20,6 +20,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
+
+
 class MainActivity : AppCompatActivity() {
 
     private val shoppingList = arrayListOf<Product>()
@@ -31,11 +33,11 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
+        supportActionBar?.title = "Shopping List Kotlin"
+
         productRepository = ProductRepository(this)
         initViews()
-
     }
-
 
     private fun initViews() {
         rvShoppingList.layoutManager = LinearLayoutManager(this, RecyclerView.VERTICAL, false)
@@ -43,37 +45,9 @@ class MainActivity : AppCompatActivity() {
         rvShoppingList.addItemDecoration(DividerItemDecoration(this, DividerItemDecoration.VERTICAL))
         createItemTouchHelper().attachToRecyclerView(rvShoppingList)
         getShoppingListFromDatabase()
+
         fab.setOnClickListener { addProduct() }
     }
-
-
-    private fun validateFields(): Boolean {
-        return if (inputWhatBuy.text.toString().isNotBlank() && inputAmount.text.toString().isNotBlank()) {
-            true
-        } else {
-            Toast.makeText(this, "Please fill in the fields", Toast.LENGTH_SHORT).show()
-            false
-        }
-    }
-
-    private fun addProduct() {
-        if (validateFields()) {
-            mainScope.launch {
-                val product = Product(
-                    name = inputWhatBuy.text.toString(),
-                    quantity = inputAmount.text.toString().toInt()
-                )
-                withContext(Dispatchers.IO) {
-                    productRepository.insertProduct(product)
-                }
-
-                getShoppingListFromDatabase()
-            }
-        }
-    }
-
-
-
 
     private fun getShoppingListFromDatabase() {
         mainScope.launch {
@@ -86,28 +60,37 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-
-
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        menuInflater.inflate(R.menu.menu_main, menu)
-        return true
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        return when (item.itemId) {
-            R.id.action_settings -> true
-            else -> super.onOptionsItemSelected(item)
+    private fun validateFields(): Boolean {
+        return if (etProduct.text.toString().isNotBlank() && etQuantity.text.toString().isNotBlank()) {
+            true
+        } else {
+            Toast.makeText(this, "Please fill in the fields", Toast.LENGTH_SHORT).show()
+            false
         }
     }
 
+    private fun addProduct() {
+        if (validateFields()) {
+            mainScope.launch {
+                val product = Product(
+                    name = etProduct.text.toString(),
+                    quantity = etQuantity.text.toString().toInt()
+                )
 
+                withContext(Dispatchers.IO) {
+                    productRepository.insertProduct(product)
+                }
 
+                getShoppingListFromDatabase()
+            }
+        }
+    }
 
-
+    /**
+     * Create a touch helper to recognize when a user swipes an item from a recycler view.
+     * An ItemTouchHelper enables touch behavior (like swipe and move) on each ViewHolder,
+     * and uses callbacks to signal when a user is performing these actions.
+     */
     private fun createItemTouchHelper(): ItemTouchHelper {
 
         // Callback which is used to create the ItemTouch helper. Only enables left swipe.
@@ -126,24 +109,43 @@ class MainActivity : AppCompatActivity() {
             // Callback triggered when a user swiped an item.
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                 val position = viewHolder.adapterPosition
-
-                val reminderToDelete = shoppingList[position]
-
-                CoroutineScope(Dispatchers.Main).launch {
+                val productToDelete = shoppingList[position]
+                mainScope.launch {
                     withContext(Dispatchers.IO) {
-                        productRepository.deleteProduct(reminderToDelete)
-
+                        productRepository.deleteProduct(productToDelete)
                     }
                     getShoppingListFromDatabase()
-
                 }
-
             }
         }
         return ItemTouchHelper(callback)
     }
 
+    private fun deleteShoppingList() {
+        mainScope.launch {
+            withContext(Dispatchers.IO) {
+                productRepository.deleteAllProducts()
+            }
+            getShoppingListFromDatabase()
+        }
+    }
 
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        menuInflater.inflate(R.menu.menu_main, menu)
+        return true
+    }
 
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        return when (item.itemId) {
+//            R.id.action_delete_shopping_list -> {
+//                deleteShoppingList()
+//                true
+//            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
 }
-

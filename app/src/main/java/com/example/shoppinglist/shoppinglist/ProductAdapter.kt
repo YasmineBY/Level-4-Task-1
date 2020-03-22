@@ -8,17 +8,11 @@ import com.example.shoppinglist.R
 import kotlinx.android.synthetic.main.content_main.view.*
 import kotlinx.android.synthetic.main.item_product.view.*
 
-class ProductAdapter (private val products: List<Product>) : RecyclerView.Adapter<ProductAdapter.ViewHolder>()  {
 
-    inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        fun bind(product: Product) {
-            itemView.tvProduct.text = product.name
-            itemView.tvQuantity.text = product.quantity.toString()
-          }
 
-    }
+class ProductAdapter(private val products: List<Product>) : RecyclerView.Adapter<ProductAdapter.ViewHolder>() {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProductAdapter.ViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(
             LayoutInflater.from(parent.context).inflate(R.layout.item_product, parent, false)
         )
@@ -28,5 +22,10 @@ class ProductAdapter (private val products: List<Product>) : RecyclerView.Adapte
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) = holder.bind(products[position])
 
-
+    inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        fun bind(product: Product) {
+            itemView.tvProduct.text = product.name
+            itemView.tvQuantity.text = product.quantity.toString()
+        }
+    }
 }
