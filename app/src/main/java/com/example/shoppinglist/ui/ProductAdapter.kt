@@ -1,11 +1,11 @@
-package com.example.shoppinglist.shoppinglist
+package com.example.shoppinglist.ui
 
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.shoppinglist.R
-import kotlinx.android.synthetic.main.content_main.view.*
+import com.example.shoppinglist.model.Product
 import kotlinx.android.synthetic.main.item_product.view.*
 
 

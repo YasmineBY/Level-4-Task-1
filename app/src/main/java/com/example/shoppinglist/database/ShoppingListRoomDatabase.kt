@@ -1,11 +1,10 @@
-package com.example.shoppinglist.model
+package com.example.shoppinglist.database
 
 import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import com.example.shoppinglist.Dao.ProductDao
-import com.example.shoppinglist.shoppinglist.Product
+import com.example.shoppinglist.model.Product
 
 
 

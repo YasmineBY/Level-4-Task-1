@@ -1,10 +1,10 @@
-package com.example.shoppinglist.Dao
+package com.example.shoppinglist.database
 
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
-import com.example.shoppinglist.shoppinglist.Product
+import com.example.shoppinglist.model.Product
 
 
 @Dao

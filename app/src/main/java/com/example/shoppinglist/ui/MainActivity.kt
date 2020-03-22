@@ -1,7 +1,6 @@
-package com.example.shoppinglist.shoppinglist
+package com.example.shoppinglist.ui
 
 import android.os.Bundle
-import com.google.android.material.snackbar.Snackbar
 import androidx.appcompat.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
@@ -11,7 +10,8 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.shoppinglist.R
-import com.example.shoppinglist.Repositories.ProductRepository
+import com.example.shoppinglist.database.ProductRepository
+import com.example.shoppinglist.model.Product
 
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_main.*
@@ -35,7 +35,8 @@ class MainActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
         supportActionBar?.title = "Shopping List Kotlin"
 
-        productRepository = ProductRepository(this)
+        productRepository =
+            ProductRepository(this)
         initViews()
     }
 
